@@ -4,7 +4,6 @@ import Result from "./Result";
 import './App.css';
 
 
-
 var CONFIG = require('./config.json');
 const APIKey = CONFIG.APIKey
 
