@@ -1,0 +1,15 @@
+.App input, .App button {
+    margin: 20px;
+    padding: 10px 20px;
+    border: 2px solid grey;
+    background-color: #fff;
+
+}
+
+.App button {
+    cursor: pointer;
+}
+.App button:hover {
+    background-color: #000;
+
+}

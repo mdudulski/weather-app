@@ -3,7 +3,15 @@ import Form from './Form';
 import Result from "./Result";
 import './App.css';
 
+
+
+var CONFIG = require('./config.json');
+const APIKey = CONFIG.APIKey
+
+
+
 class App extends Component {
+
 
     state = {
         value: "",
@@ -14,7 +22,7 @@ class App extends Component {
         temp: "",
         pressure: "",
         wind: "",
-        err: "",
+        err: false,
 
 
     }
@@ -27,21 +35,51 @@ class App extends Component {
         })
 
     }
+    componentDidMount() {
+        console.log("zamontowany");
 
-    handleCitySubmit = (e) => {
-        e.preventDefault()
-        console.log("potwierdzony formularz");
-        const API = `http://api.openweathermap.org/data/2.5/weather?q=${this.state.value}&appid=5856ea1d1ec6a9c0d6fac72713db6eb5`;
-        fetch(API)
-            .then(response => {
-                if (response.ok) {
-                    return response
-                }
-                throw Error('Nie udało się')
-            })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(err => console.log(err))
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+
+        if(this.state.value.length <=1) return
+
+
+
+        if (prevState.value !== this.state.value) {
+            const API = `http://api.openweathermap.org/data/2.5/weather?q=${this.state.value}&appid=${APIKey}&units=metric`;
+            fetch(API)
+                .then(response => {
+                    if (response.ok) {
+                        return response
+                    }
+                    throw Error('Nie udało się')
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const time = new Date().toLocaleString()
+                    this.setState(state => ({
+                        err: false,
+                        date: time,
+                        sunrise: data.sys.sunrise,
+                        sunset: data.sys.sunset,
+                        temp: data.main.temp,
+                        pressure: data.main.pressure,
+                        wind: data.wind.speed,
+                        city: state.value,
+
+                    }))
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.setState(state => ({
+                        err: true,
+                        city: this.state.value
+                    }))
+                })
+
+
+        }
 
     }
 
@@ -51,10 +89,10 @@ class App extends Component {
                 <Form
                     value={this.state.value}
                     change={this.handleInputChange}
-                    submit={this.handleCitySubmit}
+
 
                 />
-                <Result/>
+                <Result weather={this.state}/>
             </div>
         );
     }

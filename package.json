@@ -1,5 +1,6 @@
 {
   "name": "weather-app",
+  "homepage": "http://matek189.webd.pl/pogoda/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
